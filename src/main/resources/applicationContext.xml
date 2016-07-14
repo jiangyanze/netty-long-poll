@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/data/mongo
+        http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.codechiev.service" />
+	<context:component-scan base-package="com.codechiev.controller" />
+	<context:component-scan base-package="com.codechiev.net" />
+	<!-- DB
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="sqlTemplate" class="org.copycat.framework.sql.SqlTemplate">
+		<constructor-arg>
+			<ref bean="dataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="false" />
+		<property name="validationQuery" value="SELECT 1" />
+		<property name="validationInterval" value="30000" />
+		<property name="timeBetweenEvictionRunsMillis" value="5000" />
+		<property name="maxActive" value="100" />
+		<property name="minIdle" value="10" />
+		<property name="maxWait" value="10000" />
+		<property name="initialSize" value="10" />
+		<property name="removeAbandonedTimeout" value="60" />
+		<property name="removeAbandoned" value="true" />
+		<property name="logAbandoned" value="true" />
+		<property name="minEvictableIdleTimeMillis" value="30000" />
+		<property name="jmxEnabled" value="true" />
+		<property name="jdbcInterceptors" value="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
+		     org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;
+		     org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReportJmx(threshold=10000)" />
+	</bean> -->
+	
+	<!-- Redis DB 
+	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="${redis.pool.maxIdle}" />
+		<property name="maxWait" value="${redis.pool.maxWait}" />
+		<property name="testOnBorrow" value="${redis.pool.testOnBorrow}" />
+	</bean>
+	<bean id="redisTemplate" class="org.copycat.framework.nosql.RedisTemplate"
+		destroy-method="close">
+		<constructor-arg name="config" ref="poolConfig" />
+		<constructor-arg name="host" value="${redis.host}" />
+		<constructor-arg name="port" value="${redis.port}" />
+		<constructor-arg name="timeout" value="${redis.timeout}" />
+		<constructor-arg name="password" value="${redis.password}" />
+	</bean>-->
+	
+	<!-- 本地化语言 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+	<property name="defaultEncoding" value="UTF-8" />
+	<property name="basenames">
+		<list>
+			<value>message</value>
+		</list>
+	</property>
+	</bean>
+
+	<beans profile="production">
+		<context:property-placeholder location="classpath:application.properties" />
+		<util:properties id="properties" location="classpath:application.properties" />
+	</beans>
+
+	<beans profile="development">
+		<context:property-placeholder location="classpath:application-dev.properties" />
+		<util:properties id="properties" location="classpath:application-dev.properties" />
+	</beans>
+
+	<beans profile="home-dev">
+		<context:property-placeholder location="classpath:application-home.properties" />
+		<util:properties id="properties" location="classpath:application-home.properties" />
+	</beans>		
+</beans>

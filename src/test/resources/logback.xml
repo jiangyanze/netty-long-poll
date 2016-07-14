@@ -1,0 +1,16 @@
+<configuration>
+	
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date %level [%thread] [%logger{0}] Line:%L %m%n</pattern>
+		</encoder>
+	</appender>
+	
+
+	<logger name="com.codechiev.service" additivity="false"> 
+		<level value="trace" /> 
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
+	<!--<root level="DEBUG"> <appender-ref ref="STDOUT" /> </root>-->
+</configuration>

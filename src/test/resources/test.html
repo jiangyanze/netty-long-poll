@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>nerd's chat room</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />=
+<script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+<input id="chat" type="text" />
+<div id="msg">
+
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var baseUrl = "http://127.0.0.1:10086/poll/";
+	var uuid = null;
+	$.get(baseUrl,{"token":"long-poll","cmd":"user.uuid"},function(data){
+		uuid = data;
+		if ( uuid != null) {
+			onMessage(data);
+			//long-poll
+			longPoll();
+		}
+	});
+	$("#chat").keydown(function (e) {
+        if (e.keyCode === 13 && uuid != null) {
+			$.get(baseUrl,{"token":"long-poll","cmd":"user.chat","group":"g123","msg":$(this).val()},function(d2){
+				//$("#msg").html(d2+"<br/>"+$("#msg").html());//document.body.innerHTML+
+				onMessage(d2);
+			});
+		}
+		
+		if(e.ctrlKey && e.keyCode == 13){
+			$("#msg").html("");
+		}
+	});
+var xhr = null;
+function longPoll(){
+	$.ajax({
+		method: "GET",
+		url: baseUrl,
+		data: {"token":"long-poll","uuid":uuid,"cmd":"user.poll","group":"g123","uid":123},
+		error:function(type ,status){
+			longPoll();
+			onMessage("error.poll");
+			},
+		success:function(d2) {
+			onMessage(d2);
+			longPoll();
+			},
+		timeout:30000 // sets timeout to 3 seconds
+		});
+//	$.get(baseUrl,{"token":"long-poll","uuid":uuid,"cmd":"login.poll","group":"g123"},function(d2){
+//		$("#msg").html(d2+"<br/>"+$("#msg").html());
+//		longPoll();
+//	});
+}
+function onMessage(msg){
+$("#msg").html(msg+"<br/>"+$("#msg").html());
+	//for(var i=0;i<msg.length;i++){
+		//$("#msg").html(msg[i]+"<br/>"+$("#msg").html());
+	//}
+}
+
+});
+</script>
+</body>
+</html>
